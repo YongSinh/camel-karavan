@@ -1,0 +1,67 @@
+- rest:
+    id: rest-e7a6
+    post:
+      - id: post-cf8e
+        path: /karavan/metfone/top-up/check-balance
+        to: direct:test
+        consumes: application/json
+        produces: application/json
+- route:
+    id: route-2995
+    nodePrefixId: route-d41
+    from:
+      id: from-ac29
+      uri: direct
+      parameters:
+        name: test
+      steps:
+        - log:
+            id: log-incoming-body
+            message: "Incoming Request Body: ${body}"
+        - setHeader:
+            id: set-header-app-code
+            name: App-Code
+            expression:
+              constant:
+                id: constant-7217
+                expression: TST
+        - setHeader:
+            id: set-header-correlation-id
+            name: Correlation-Id
+            expression:
+              constant:
+                id: constant-5ff6
+                expression: d947e0c6-3e89-44ed-8a62-e268f8f9e16d
+        - setHeader:
+            id: set-header-content-type
+            name: Content-Type
+            expression:
+              constant:
+                id: constant-95d3
+                expression: application/json
+        - log:
+            id: log-headers
+            message: >-
+              App-Code=${header.App-Code},
+              Correlation-Id=${header.Correlation-Id},
+              Content-Type=${header.Content-Type}
+        - setHeader:
+            id: setHeader-cf39
+            name: Request-Body
+            expression:
+              constant:
+                id: constant-6a32
+                expression: ${body}
+        - to:
+            id: to-5806
+            uri: https
+            parameters:
+              httpUri: >-
+                https://mi-uat.phillipbank.com.kh/v1/metfone/top-up/check-balance
+              httpMethod: POST
+              bridgeEndpoint: true
+        - log:
+            id: log-response
+            message: >-
+              Response Body: ${body}, HTTP Status:
+              ${header.CamelHttpResponseCode}
